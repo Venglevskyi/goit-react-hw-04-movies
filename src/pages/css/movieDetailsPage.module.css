@@ -1,0 +1,26 @@
+.wrapper {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.aboutMovie {
+  display: inline-block;
+  width: 50%;
+  font-weight: 400;
+}
+
+.imageDetails {
+  display: inline-block;
+  flex-direction: column;
+  width: 25%;
+  margin-right: 30px;
+}
+
+.cast {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.link {
+  list-style: none;
+}
