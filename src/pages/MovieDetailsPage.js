@@ -11,7 +11,7 @@ import routes from "../routes";
 import styles from "./css/movieDetailsPage.module.css";
 
 export default class MovieDetailsPage extends Component {
-  state = { movies: null };
+  state = { movies: null, error: null };
 
   componentDidMount() {
     this.fetchSelectedMovie();
@@ -19,17 +19,20 @@ export default class MovieDetailsPage extends Component {
 
   fetchSelectedMovie = () => {
     const movieId = this.props.match.params.movieId;
-    fetchDetailsMovie(movieId).then(movies => {
-      this.setState({ movies });
-    });
+    fetchDetailsMovie(movieId)
+      .then(movies => {
+        this.setState({ movies });
+      })
+      .catch(error => this.setState({ error }));
   };
 
   render() {
-    const { movies } = this.state;
+    const { movies, error } = this.state;
     const { match } = this.props;
 
     return (
       <main>
+        {error && <p>Whoops, something went wrong: {error}</p>}
         {movies && (
           <div className={styles.wrapper}>
             <div className={styles.imageDetails}>
@@ -45,7 +48,7 @@ export default class MovieDetailsPage extends Component {
             </div>
             <div className={styles.aboutMovie}>
               <h1>{movies.title}</h1>
-              <p>{movies.vote_average}</p>
+              <p>User score: {movies.vote_average * 10 + "%"}</p>
               <h2>Overview</h2>
               <p>{movies.overview}</p>
               <h3>Genres</h3>

@@ -9,7 +9,8 @@ import styles from "./css/homePage.module.css";
 export default class MoviesPage extends Component {
   state = {
     inputValue: " ",
-    movies: null
+    movies: null,
+    error: null
   };
 
   componentDidMount() {
@@ -36,7 +37,9 @@ export default class MoviesPage extends Component {
       return;
     }
 
-    fetchSearchMovies(nextQuery).then(movies => this.setState({ movies }));
+    fetchSearchMovies(nextQuery)
+      .then(movies => this.setState({ movies }))
+      .catch(error => this.setState({ error }));
   }
 
   handleChange = ({ target }) => {
@@ -57,7 +60,7 @@ export default class MoviesPage extends Component {
   };
 
   render() {
-    const { movies, inputValue } = this.state;
+    const { movies, inputValue, error } = this.state;
     const { match } = this.props;
 
     return (
@@ -76,9 +79,10 @@ export default class MoviesPage extends Component {
             Search
           </button>
         </form>
+        {error && <p>Whoops, something went wrong: {error}</p>}
         {movies && (
           <ul className={styles.filmMenu}>
-            {movies.map(({ id, poster_path, media_type }) => (
+            {movies.map(({ id, poster_path }) => (
               <li key={id} className={styles.filmMenuList}>
                 <Link to={`${match.url}/${id}`}>
                   <img

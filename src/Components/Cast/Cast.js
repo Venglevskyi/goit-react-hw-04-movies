@@ -20,9 +20,11 @@ export default class Cast extends Component {
 
   fetchCast = () => {
     const movieId = this.props.match.params.movieId;
-    fetchShowActors(movieId).then(movies => {
-      this.setState({ movies });
-    });
+    fetchShowActors(movieId)
+      .then(movies => {
+        this.setState({ movies });
+      })
+      .catch(error => console.log(error));
   };
 
   render() {
