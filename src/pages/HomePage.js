@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { fetchShowPopularMovies } from "../service/apiMovies";
 import Spiner from "../Components/Loader/Loader";
 
+import routes from "../routes";
 import styles from "./css/homePage.module.css";
 
 export default class HomePage extends Component {
@@ -27,17 +28,23 @@ export default class HomePage extends Component {
   };
 
   render() {
-    const { movies, loading } = this.state;
+    const { movies, loading, error } = this.state;
 
     return (
       <main>
         <h1 className={styles.title}>Trending today</h1>
+        {error && <p>Whoops, something went wrong: {error.massage}</p>}
         {loading && <Spiner />}
         {movies.length > 0 && !loading && (
           <ul className={styles.filmMenu}>
             {movies.map(({ id, poster_path, media_type }) => (
               <li key={id} className={styles.filmMenuList}>
-                <Link to={`movies/${id}`}>
+                <Link
+                  to={{
+                    pathname: `${routes.SEARCH_MOVIES}/${id}`,
+                    state: { from: this.props.location }
+                  }}
+                >
                   <img
                     src={`http://image.tmdb.org/t/p/w500/${poster_path}`}
                     alt={media_type}
@@ -54,11 +61,7 @@ export default class HomePage extends Component {
 }
 
 HomePage.propTypes = {
-  movies: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      poster_path: PropTypes.string.isRequired,
-      media_type: PropTypes.string.isRequired
-    })
-  )
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
 };

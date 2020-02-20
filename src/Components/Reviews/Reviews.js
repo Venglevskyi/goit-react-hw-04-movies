@@ -31,13 +31,13 @@ export default class Reviews extends Component {
   };
 
   render() {
-    const { reviews, loading } = this.state;
-    console.log(reviews);
+    const { reviews, loading, error } = this.state;
 
     return (
       <div>
+        {error && <p>Whoops, something went wrong: {error.message}</p>}
         {loading && <Spiner />}
-        {reviews && (
+        {reviews.length > 0 && !loading && (
           <ul>
             {reviews.map(({ id, author, content }) => (
               <li key={id}>
@@ -56,11 +56,8 @@ export default class Reviews extends Component {
 }
 
 Reviews.propTypes = {
-  movies: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      author: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired
-    })
-  )
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
 };
+

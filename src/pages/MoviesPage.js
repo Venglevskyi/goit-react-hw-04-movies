@@ -1,17 +1,15 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 import { fetchSearchMovies } from "../service/apiMovies";
+import SearchForm from "../Components/SearchForm/SearchForm";
 
 import styles from "./css/homePage.module.css";
+import routes from "../routes";
 
 export default class MoviesPage extends Component {
-  state = {
-    inputValue: " ",
-    movies: null,
-    error: null
-  };
+  state = { movies: null, error: null };
 
   componentDidMount() {
     const currentQuery = new URLSearchParams(this.props.location.search).get(
@@ -22,7 +20,7 @@ export default class MoviesPage extends Component {
       return;
     }
 
-    fetchSearchMovies(currentQuery).then(movies => this.setState({ movies }));
+    this.fetchSearchMoviesByQuery(currentQuery);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -37,19 +35,13 @@ export default class MoviesPage extends Component {
       return;
     }
 
-    fetchSearchMovies(nextQuery)
-      .then(movies => this.setState({ movies }))
-      .catch(error => this.setState({ error }));
+    this.fetchSearchMoviesByQuery(nextQuery);
   }
 
-  handleChange = ({ target }) => {
-    this.setState({ inputValue: target.value });
-  };
-
-  handleSubmit = e => {
-    e.preventDefault();
-    this.setSearchQuery(this.state.inputValue);
-    this.setState({ inputValue: "" });
+  fetchSearchMoviesByQuery = query => {
+    fetchSearchMovies(query)
+      .then(movies => this.setState({ movies }))
+      .catch(error => this.setState({ error }));
   };
 
   setSearchQuery = Searchquery => {
@@ -60,31 +52,23 @@ export default class MoviesPage extends Component {
   };
 
   render() {
-    const { movies, inputValue, error } = this.state;
-    const { match } = this.props;
+    const { movies, error } = this.state;
+    const { location } = this.props;
 
     return (
       <div>
-        <form className={styles.Form} onSubmit={this.handleSubmit}>
-          <input
-            className={styles.FormInput}
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search movies"
-            value={inputValue}
-            onChange={this.handleChange}
-          />
-          <button className={styles.FormButton} type="submit">
-            Search
-          </button>
-        </form>
+        <SearchForm onSubmit={this.setSearchQuery} />
         {error && <p>Whoops, something went wrong: {error}</p>}
         {movies && (
           <ul className={styles.filmMenu}>
             {movies.map(({ id, poster_path }) => (
               <li key={id} className={styles.filmMenuList}>
-                <Link to={`${match.url}/${id}`}>
+                <Link
+                  to={{
+                    pathname: `${routes.SEARCH_MOVIES}/${id}`,
+                    state: { from: location }
+                  }}
+                >
                   <img
                     src={`http://image.tmdb.org/t/p/w500/${poster_path}`}
                     alt=""
@@ -101,10 +85,7 @@ export default class MoviesPage extends Component {
 }
 
 MoviesPage.propTypes = {
-  movies: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      poster_path: PropTypes.string.isRequired
-    })
-  )
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
 };

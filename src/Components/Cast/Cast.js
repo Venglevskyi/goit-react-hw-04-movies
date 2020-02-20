@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import Spiner from "../Loader/Loader";
 import { fetchShowActors } from "../../service/apiMovies";
 import styles from "./cast.module.css";
 
 export default class Cast extends Component {
-  state = { movies: null };
+  state = { movies: [], error: null, loading: false };
 
   componentDidMount() {
     this.fetchCast();
@@ -19,22 +20,27 @@ export default class Cast extends Component {
   }
 
   fetchCast = () => {
+    this.setState({ loading: true });
     const movieId = this.props.match.params.movieId;
     fetchShowActors(movieId)
+      .then(data => data.cast)
       .then(movies => {
         this.setState({ movies });
       })
-      .catch(error => console.log(error));
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ loading: false }));
   };
 
   render() {
-    const { movies } = this.state;
+    const { movies, error, loading } = this.state;
 
     return (
       <div>
-        {movies && (
+        {error && <p>Whoops, something went wrong: {error.message}</p>}
+        {loading && <Spiner />}
+        {movies.length > 0 && !loading && (
           <ul className={styles.cast}>
-            {movies.cast.map(({ id, name, character, profile_path }) => (
+            {movies.map(({ id, name, character, profile_path }) => (
               <li key={id} className={styles.castItem}>
                 <img
                   src={`http://image.tmdb.org/t/p/w500/${profile_path}`}
@@ -53,12 +59,7 @@ export default class Cast extends Component {
 }
 
 Cast.propTypes = {
-  movies: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      poster_path: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      character: PropTypes.string.isRequired
-    })
-  )
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
 };
