@@ -22,9 +22,8 @@ export default class HomePage extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.movies !== prevState.movies && prevState.movies.length !== 0) {
+    if (this.state.movies !== prevState.movies) {
       this.scroller();
-      console.log("hhd")
     }
   }
 
