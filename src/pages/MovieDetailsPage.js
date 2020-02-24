@@ -38,7 +38,7 @@ export default class MovieDetailsPage extends Component {
 
   render() {
     const { movies, error, loading } = this.state;
-    const { match } = this.props;
+    const { match, location } = this.props;
 
     return (
       <main>
@@ -53,7 +53,7 @@ export default class MovieDetailsPage extends Component {
                 <Link
                   to={{
                     pathname: `${match.url}/cast`,
-                    state: { from: this.props.location }
+                    state: { from: location.state.from }
                   }}
                   className={styles.link}
                 >
@@ -64,7 +64,7 @@ export default class MovieDetailsPage extends Component {
                 <Link
                   to={{
                     pathname: `${match.url}/reviews`,
-                    state: { from: this.props.location }
+                    state: { from: location.state.from }
                   }}
                   className={styles.link}
                 >

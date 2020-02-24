@@ -1,6 +1,5 @@
-const fetchShowPopularMovies = () => {
-  const baseUrl =
-    "https://api.themoviedb.org/3/trending/all/day?api_key=ffb803f52f4e27e6105837b5e1f7e8d0";
+const fetchShowPopularMovies = page => {
+  const baseUrl = "https://api.themoviedb.org/3/trending/all/day";
   const options = {
     method: "GET",
     headers: {
@@ -8,7 +7,8 @@ const fetchShowPopularMovies = () => {
       Accept: "application/json"
     }
   };
-  return fetch(baseUrl, { options })
+  const requestParameter = `?api_key=ffb803f52f4e27e6105837b5e1f7e8d0&page=${page}`;
+  return fetch(baseUrl + requestParameter, { options })
     .then(response => response.json())
     .then(data => data.results);
 };

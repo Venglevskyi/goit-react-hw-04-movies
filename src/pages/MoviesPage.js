@@ -4,12 +4,14 @@ import { Link } from "react-router-dom";
 
 import { fetchSearchMovies } from "../service/apiMovies";
 import SearchForm from "../Components/SearchForm/SearchForm";
+import Spiner from "../Components/Loader/Loader";
+import Button from "../Components/Button/Button";
 
 import styles from "./css/homePage.module.css";
 import routes from "../routes";
 
 export default class MoviesPage extends Component {
-  state = { movies: null, error: null };
+  state = { movies: [], error: null, loading: false };
 
   componentDidMount() {
     const currentQuery = new URLSearchParams(this.props.location.search).get(
@@ -34,14 +36,16 @@ export default class MoviesPage extends Component {
     if (prevQuery === nextQuery) {
       return;
     }
-
     this.fetchSearchMoviesByQuery(nextQuery);
   }
 
   fetchSearchMoviesByQuery = query => {
+    this.setState({ loading: true });
+
     fetchSearchMovies(query)
       .then(movies => this.setState({ movies }))
-      .catch(error => this.setState({ error }));
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ loading: false }));
   };
 
   setSearchQuery = Searchquery => {
@@ -52,14 +56,15 @@ export default class MoviesPage extends Component {
   };
 
   render() {
-    const { movies, error } = this.state;
+    const { movies, error, loading } = this.state;
     const { location } = this.props;
 
     return (
       <div>
         <SearchForm onSubmit={this.setSearchQuery} />
         {error && <p>Whoops, something went wrong: {error}</p>}
-        {movies && (
+        {loading && <Spiner />}
+        {movies.length > 0 && !loading && (
           <ul className={styles.filmMenu}>
             {movies.map(({ id, poster_path }) => (
               <li key={id} className={styles.filmMenuList}>
@@ -78,6 +83,9 @@ export default class MoviesPage extends Component {
               </li>
             ))}
           </ul>
+        )}
+        {movies.length > 0 && !loading && (
+          <Button clickButton={this.fetchSearchMoviesByQuery} />
         )}
       </div>
     );

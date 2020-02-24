@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import { fetchShowPopularMovies } from "../service/apiMovies";
 import Spiner from "../Components/Loader/Loader";
+import Button from "../Components/Button/Button";
 
 import routes from "../routes";
 import styles from "./css/homePage.module.css";
@@ -11,6 +12,7 @@ import styles from "./css/homePage.module.css";
 export default class HomePage extends Component {
   state = {
     movies: [],
+    page: 1,
     error: null,
     loading: false
   };
@@ -20,11 +22,26 @@ export default class HomePage extends Component {
   }
 
   fetchPopularMovies = () => {
+    const { page } = this.state;
+
     this.setState({ loading: true });
-    fetchShowPopularMovies()
-      .then(movies => this.setState({ movies }))
+
+    fetchShowPopularMovies(page)
+      .then(movies =>
+        this.setState(state => ({
+          movies: [...state.movies, ...movies],
+          page: state.page + 1
+        }))
+      )
       .catch(error => this.setState({ error }))
       .finally(() => this.setState({ loading: false }));
+  };
+
+  scroller = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth"
+    });
   };
 
   render() {
@@ -54,6 +71,9 @@ export default class HomePage extends Component {
               </li>
             ))}
           </ul>
+        )}
+        {movies.length > 0 && !loading && (
+          <Button clickButton={this.fetchPopularMovies} />
         )}
       </main>
     );
