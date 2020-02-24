@@ -21,6 +21,13 @@ export default class HomePage extends Component {
     this.fetchPopularMovies();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    
+    if(this.state.movies.length > prevState.movies.length && prevState.movies.length !== 0) {
+      this.scroller();
+    }
+  }
+
   fetchPopularMovies = () => {
     const { page } = this.state;
 
