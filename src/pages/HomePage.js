@@ -57,12 +57,13 @@ export default class HomePage extends Component {
       <main>
         <h1 className={styles.title}>Trending today</h1>
         {error && <p>Whoops, something went wrong: {error.massage}</p>}
-        {loading && <Spiner />}
+        {/* {loading && <Spiner />} */}
         {movies.length > 0 && (
           <ul className={styles.filmMenu}>
             {movies.map(({ id, poster_path, media_type }) => (
               <li key={id} className={styles.filmMenuList}>
                 <Link
+                  style={{ display: "block", height: 300 }}
                   to={{
                     pathname: `${routes.SEARCH_MOVIES}/${id}`,
                     state: { from: this.props.location }
@@ -71,7 +72,7 @@ export default class HomePage extends Component {
                   <img
                     src={`http://image.tmdb.org/t/p/w500/${poster_path}`}
                     alt={media_type}
-                    height="300px"
+                    style={{ height: 300, objectFit: "cover" }}
                   />
                 </Link>
               </li>

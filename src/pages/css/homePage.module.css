@@ -5,13 +5,16 @@
 .filmMenu {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   padding: 0;
+  margin: 0 auto;
 }
 
 .filmMenuList {
   list-style: none;
   margin-bottom: 10px;
+  width: 20%;
+  height: 300px;
 }
 
 /* Form */
@@ -24,7 +27,6 @@
     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
   margin: 0 auto 30px;
 }
-
 
 .FormInput {
   color: #171718;
