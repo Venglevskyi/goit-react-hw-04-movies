@@ -22,8 +22,9 @@ export default class HomePage extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.movies !== prevState.movies) {
+    if (this.state.movies !== prevState.movies && prevState.movies.length !== 0) {
       this.scroller();
+      console.log("hhd")
     }
   }
 
@@ -58,7 +59,7 @@ export default class HomePage extends Component {
         <h1 className={styles.title}>Trending today</h1>
         {error && <p>Whoops, something went wrong: {error.massage}</p>}
         {loading && <Spiner />}
-        {movies.length > 0 && !loading && (
+        {movies.length > 0 && (
           <ul className={styles.filmMenu}>
             {movies.map(({ id, poster_path, media_type }) => (
               <li key={id} className={styles.filmMenuList}>
